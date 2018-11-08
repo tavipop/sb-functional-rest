@@ -37,6 +37,10 @@ curl -v 'http://localhost:8080/person/1'
 curl -d '{"name":"Jack Doe","age":"16"}' -H 'Content-Type: application/json' -v 'http://localhost:8080/person'
 ```
 
+```bash
+curl -v 'http://localhost:8080/person/-1'
+```
+
 ### License
 This sample released under version 2.0 of the [Apache License][].
 

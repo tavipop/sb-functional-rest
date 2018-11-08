@@ -16,6 +16,8 @@
 
 package org.springframework.samples.web.reactive.function;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -37,9 +39,15 @@ public class PersonHandler {
 		int personId = Integer.valueOf(request.pathVariable("id"));
 		Mono<ServerResponse> notFound = ServerResponse.notFound().build();
 		Mono<Person> personMono = this.repository.getPerson(personId);
+
 		return personMono
 				.flatMap(person -> ServerResponse.ok().contentType(APPLICATION_JSON).body(fromObject(person)))
-				.switchIfEmpty(notFound);
+				.switchIfEmpty(notFound)
+				//.onErrorReturn(new Person("default", -1))
+				.onErrorResume(e -> Mono.just(HttpStatus.BAD_REQUEST + " " + e.getMessage())
+						.flatMap(s -> ServerResponse.status(HttpStatus.BAD_REQUEST)
+								.contentType(MediaType.TEXT_PLAIN)
+								.syncBody(s)));
 	}
 
 

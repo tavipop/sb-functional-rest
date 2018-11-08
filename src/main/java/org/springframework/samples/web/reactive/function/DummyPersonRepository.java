@@ -36,6 +36,10 @@ public class DummyPersonRepository implements PersonRepository {
 
 	@Override
 	public Mono<Person> getPerson(int id) {
+		if (id <0){
+			return Mono.error(new IllegalArgumentException("Invalid identifier provided"));
+		}
+
 		return Mono.justOrEmpty(this.people.get(id));
 	}
 
